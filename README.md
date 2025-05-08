@@ -2,190 +2,137 @@
 
 ## Overview
 
-This repository provides a **5-stage pipelined RISC-V processor** implemented in **Verilog**. It is designed to serve as an educational tool for understanding processor architecture, particularly in the context of RISC-V (Reduced Instruction Set Computing). The processor is designed to execute RISC-V instructions with a 5-stage pipeline, which includes:
+This repository implements a **5-stage pipelined RISC-V processor** based on the RV32I instruction set architecture (ISA). The project is designed to demonstrate key concepts in processor design, including pipelining, hazard detection, and data forwarding. The project was initially developed as a **single-cycle processor** and later extended to a **five-stage pipelined processor**, enabling increased performance and instruction throughput.
 
-* **Instruction Fetch (IF)**
-* **Instruction Decode (ID)**
-* **Execute (EX)**
-* **Memory Access (MEM)**
-* **Write Back (WB)**
+### Key Highlights:
 
-This project allows you to simulate and explore the fundamental workings of a CPU, making it ideal for students, educators, and enthusiasts of computer architecture and digital design.
+* **Single-Cycle Processor** as a foundation for design.
+* **5-Stage Pipeline**: Instruction Fetch (IF), Instruction Decode (ID), Execute (EX), Memory Access (MEM), Write-Back (WB).
+* **Hazard Detection**: Handling data hazards and control hazards (with stalling and forwarding techniques).
+* **Verilog Implementation** for FPGA and simulation.
+* **Testbenches**: Simulated using a custom test suite to validate processor functionality.
 
----
+## Features
 
-## Key Features
+* **RV32I Instruction Set Support**:
 
-* **5-Stage Pipeline**: Implemented using the traditional IF, ID, EX, MEM, and WB stages.
-* **Verilog-Based**: The processor is written in **Verilog**, making it suitable for simulation and FPGA implementation.
-* **Modular Design**: The design is modular and organized into separate files for **control path** and **data path**, making it easy to modify and extend.
-* **Testbenches**: Includes testbenches to simulate the processor’s functionality and verify its performance.
-* **MIT License**: The project is open source and available for educational use under the MIT license.
+  * R-Type: `add`, `sub`, `xor`, `and`, `or`, `sll`, `srl`, `sra`, `slt`, `sltu`
+  * I-Type: `addi`, `lw`, `xori`, `ori`, `andi`, `slti`, `sltiu`, `slli`, `srli`, `srai`
+  * S-Type: `sw`
+  * B-Type: `beq`, `bne`, `blt`, `bge`, `bltu`, `bgeu`
+  * J-Type: `jal`
 
----
+* **Pipeline Implementation** with forward and stall mechanisms.
+
+* **Simulation and Verification** using assembly programs for different instruction formats and cycles.
+
+* **Verilog Code**: Modular design with separate modules for control and data path.
+
+* **Waveform Analysis** for verifying functional correctness.
 
 ## Directory Structure
 
 ```
-RISC_V_Processor/
-├── ControlPath/      # Control path logic (instruction decoding, hazard detection)
-├── DataPath/         # Data path logic (ALU, registers, memory interface)
-├── RISCV/            # Top-level module and testbenches for verification
-├── LICENSE           # MIT License file
+RISC-V_Processor/
+├── ControlPath/      # Control logic modules (decoder, hazard detection, forwarding)
+├── DataPath/         # Data path modules (ALU, registers, memory)
+├── RISCV/            # Top-level Verilog code and testbenches
+├── LICENSE           # MIT License
 └── README.md         # Project documentation
 ```
-
-### 1. `ControlPath/`
-
-* Contains the control unit logic that generates control signals for the data path.
-* Handles instruction decoding and hazard detection.
-
-### 2. `DataPath/`
-
-* Implements the actual data processing units, such as the **ALU**, **register file**, and **memory**.
-* Contains modules for multiplexers, registers, and ALU components to execute instructions.
-
-### 3. `RISCV/`
-
-* Contains the **top-level module** that integrates both the control and data path.
-* Includes **testbenches** to simulate the processor with different instruction sets and verify the correct operation.
-
----
 
 ## Getting Started
 
 ### Prerequisites
 
-Before using this project, ensure you have the following tools installed:
-
-* **Verilog Simulator**: Any simulator like **ModelSim**, **VCS**, **XSIM**, or similar. You can also use **Xilinx Vivado** or **Intel Quartus** for FPGA simulation.
-* **FPGA Development Board** (optional): To deploy and test the processor on actual hardware.
-* **Python** (optional): For running any associated scripts or testbenches.
+* **Verilog Simulator** (e.g., ModelSim, VCS, Icarus Verilog)
+* **FPGA Development Board** (optional for hardware implementation)
+* **Python** (optional for running scripts or testbenches)
 
 ### Clone the Repository
 
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/sabhinav3/RISC_V_Processor.git
-   cd RISC_V_Processor
-   ```
-
-2. The directory structure:
-
-   ```
-   RISC_V_Processor/
-   ├── ControlPath/
-   ├── DataPath/
-   ├── RISCV/
-   ├── LICENSE
-   └── README.md
+   git clone https://github.com/your_username/RISC-V-Processor.git
+   cd RISC-V-Processor
    ```
 
 ### Simulation
 
-1. **Compile** the Verilog files with your Verilog simulator. For example, with **ModelSim**:
+1. **Compile** the Verilog files:
 
    ```bash
    vlog -sv RISCV/*.sv
+   ```
+
+2. **Run the simulation** with a simulator (e.g., ModelSim, Icarus Verilog):
+
+   ```bash
    vsim RISCV.tb_riscv_processor
    ```
 
-2. **Run the simulation**. You will see the results on the waveform viewer, which will allow you to inspect the processor’s operations in different stages of the pipeline.
-
-3. The testbenches include various RISC-V instructions to verify correct behavior, including:
-
-   * Register operations
-   * Memory operations
-   * ALU operations
-   * Branch instructions
+3. View the waveform and verify the execution of instructions.
 
 ### FPGA Implementation
 
-To implement the processor on an FPGA:
-
-1. **Synthesize** the design using your FPGA toolchain (e.g., **Xilinx Vivado** or **Intel Quartus**).
-2. **Generate** the bitstream file.
-3. **Upload** the bitstream to the FPGA.
-4. **Test** the processor using input stimuli (e.g., switches or a UART interface for input/output).
+1. **Synthesize** the design with your FPGA toolchain (e.g., Xilinx Vivado, Intel Quartus).
+2. **Generate the bitstream** and **upload** it to the FPGA for testing.
 
 ---
 
-## How the Processor Works
+## Design Details
 
-### Control Path
+### 1. **Single-Cycle Processor**
 
-The **control path** is responsible for:
+The single-cycle design executes each instruction in a single clock cycle, simplifying control logic but limiting performance due to inefficiencies in resource utilization.
 
-* Decoding the instructions.
-* Generating control signals for the data path based on the instruction type.
-* Handling hazards like data hazards and control hazards.
+### 2. **5-Stage Pipelined Processor**
 
-The control unit fetches the instruction from memory, decodes it, and generates the appropriate signals for the data path.
+* **Instruction Fetch (IF)**: Fetches instructions from memory.
+* **Instruction Decode (ID)**: Decodes instruction and fetches operand values from registers.
+* **Execute (EX)**: Executes arithmetic/logical operations using the ALU.
+* **Memory Access (MEM)**: Reads from or writes to data memory.
+* **Write-Back (WB)**: Writes the result back to the register file.
 
-### Data Path
+#### Advantages of Pipelining:
 
-The **data path** is where the actual processing happens. It consists of:
+* Increased throughput by allowing multiple instructions to be processed simultaneously at different stages.
+* Shortened cycle time compared to single-cycle design.
 
-* **Registers** to store intermediate results.
-* **ALU** to perform arithmetic and logical operations.
-* **Multiplexers (MUX)** to select between different data inputs.
-* **Memory** for data storage and retrieval.
+### 3. **Hazard Handling**
 
-The data path modules perform the operations based on the control signals received from the control path. These operations include reading from or writing to memory, executing arithmetic operations, and updating the register file.
-
-### Pipeline Stages
-
-* **IF (Instruction Fetch)**: Fetches the instruction from the instruction memory.
-* **ID (Instruction Decode)**: Decodes the instruction and generates control signals.
-* **EX (Execute)**: Performs the ALU operations.
-* **MEM (Memory Access)**: Handles data memory operations (read/write).
-* **WB (Write Back)**: Writes the result back to the register file.
-
-### Pipelining and Hazards
-
-* **Pipeline Stages**: Each instruction goes through five stages, which allows for multiple instructions to be processed simultaneously.
-* **Data Hazards**: Handled by forwarding data between stages or stalling the pipeline when necessary.
-* **Control Hazards**: Handled by branch prediction and stalling.
+* **Data Hazards**: Managed with data forwarding and stalls for Load-Use hazards.
+* **Control Hazards**: Handled through branch prediction and pipeline flushing.
 
 ---
 
-## Testbenches
+## Simulation Results
 
-The repository includes testbenches for simulating the processor. These testbenches verify the correctness of the RISC-V instruction set, ensuring that the processor behaves as expected under various scenarios.
+### Test Instructions
 
-### Example Testbench
+The processor was validated using a variety of test programs:
 
-```verilog
-module tb_riscv_processor;
-    // Inputs and outputs for the processor
-    reg clk, reset;
-    wire [31:0] instruction;
-    
-    // Instantiate the RISC-V processor
-    RISCV_Processor uut (
-        .clk(clk),
-        .reset(reset),
-        .instruction(instruction)
-    );
-    
-    // Clock generation
-    always begin
-        #5 clk = ~clk;  // Toggle clock every 5 time units
-    end
+* **R-Type Instructions**: `add`, `sub`, `xor`, `and`, etc.
+* **I-Type Instructions**: `addi`, `lw`, `xori`, etc.
+* **S-Type Instructions**: `sw`
+* **Branch Instructions**: `beq`, `bne`, `blt`, etc.
 
-    initial begin
-        // Initialize
-        clk = 0;
-        reset = 1;
-        #10 reset = 0;  // Deassert reset after 10 time units
-        
-        // Add your test cases here
-    end
-endmodule
+### Example Assembly Code for R-Type Instructions:
+
+```assembly
+addi t0, zero, 10    # t0 = 10
+addi t1, zero, 3     # t1 = 3
+add t3, t0, t1       # t3 = t0 + t1 = 13
+sub t4, t0, t1       # t4 = t0 - t1 = 7
 ```
 
+### Waveform Analysis:
 
+Simulation results demonstrated correct functionality for:
+
+* **Data forwarding**: Correct operand propagation between stages.
+* **Hazard resolution**: No incorrect data due to forward paths or stalls.
 
 ## References and Resources
 
